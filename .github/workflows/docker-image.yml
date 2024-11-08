@@ -16,22 +16,47 @@ jobs:
 
       # Vérifie la présence du fichier WAR
       - name: Verify WAR file
-        run: ls -l target/
-      
+        run: |
+          echo "Listing files in target directory:"
+          ls -l target/
+          echo "Checking if WAR file exists"
+          if [ ! -f "target/TP_A18_ci_cd_SOUMATIA-1.0-SNAPSHOT.war" ]; then
+            echo "WAR file not found!"
+            exit 1
+          fi
+
       # Connexion à Docker Hub
       - name: Log in to Docker Hub
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-        run: echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
+        run: |
+          echo "Logging into Docker Hub..."
+          echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
+          if [ $? -ne 0 ]; then
+            echo "Docker login failed!"
+            exit 1
+          fi
 
       # Build de l'image Docker avec cache désactivé pour éviter les conflits
       - name: Build Docker image
-        run: docker build --no-cache --progress=plain -t ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest .
+        run: |
+          echo "Building Docker image..."
+          docker build --no-cache --progress=plain -t ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest .
+          if [ $? -ne 0 ]; then
+            echo "Docker build failed!"
+            exit 1
+          fi
 
       # Push de l'image vers Docker Hub
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest
+        run: |
+          echo "Pushing Docker image to Docker Hub..."
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest
+          if [ $? -ne 0 ]; then
+            echo "Docker push failed!"
+            exit 1
+          fi
 
       # Nettoyage de l'image locale
       - name: Remove local Docker image
