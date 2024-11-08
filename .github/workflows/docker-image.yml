@@ -11,14 +11,15 @@ jobs:
 
     steps:
       # Checkout du code
-      - name: Checkout code 
+      - name: Checkout code
         uses: actions/checkout@v3
 
       # Set up JDK pour Maven
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11' # Changez la version si nécessaire
+          java-version: '11'        # Changez la version si nécessaire
+          distribution: 'temurin'   # Spécifiez la distribution
 
       # Build du projet avec Maven pour générer le fichier WAR
       - name: Build with Maven
