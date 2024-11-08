@@ -5,7 +5,8 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Application Web, TP-A18, SOUMATIA FATMA-ZOHRA" %>
+<h1><%= "Application Web, TP-A18, " +
+        "SOUMATIA FATMA-ZOHRA" %>
 </h1>
 <br/>
 
