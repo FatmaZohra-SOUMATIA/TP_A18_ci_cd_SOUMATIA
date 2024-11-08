@@ -12,8 +12,12 @@ jobs:
     steps:
       # Checkout du code
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+      # Vérifie la présence du fichier WAR
+      - name: Verify WAR file
+        run: ls -l target/
+      
       # Connexion à Docker Hub
       - name: Log in to Docker Hub
         env:
@@ -21,10 +25,14 @@ jobs:
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
         run: echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
 
-      # Build de l'image Docker
+      # Build de l'image Docker avec cache désactivé pour éviter les conflits
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest .
+        run: docker build --no-cache --progress=plain -t ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest .
 
       # Push de l'image vers Docker Hub
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest
+
+      # Nettoyage de l'image locale
+      - name: Remove local Docker image
+        run: docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/tp_a18_ci_cd_soumatia:latest || true
