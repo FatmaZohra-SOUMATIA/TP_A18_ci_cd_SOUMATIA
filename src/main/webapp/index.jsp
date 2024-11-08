@@ -8,7 +8,7 @@
 <h1><%= "Application Web, TP-A18, SOUMATIA FATMA-ZOHRA" %>
 </h1>
 <br/>
-<h2>mise a jour</h2>
-<a href="hello-servlet">Hello Servlet</a>
+
+<a href="hello-servlet">Commencer</a>
 </body>
 </html>
